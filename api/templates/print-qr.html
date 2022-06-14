@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <section class="main printable-area">
+    <div class="border">
+      <img id="scissors" src="https://icongr.am/feather/scissors.svg?size=30&color=222222" alt="icon">
+      <h3 class="title">{{container.name}}</h3>
+      <img id="qr" src="{{qr_filename}}" alt="">
+    </div>
+    <footer>
+      <a href="" class="button secondary icon print">Print
+        <img src="https://icongr.am/feather/printer.svg?size=20&color=377D7F" alt="icon">
+      </a>
+      <a href="/manage" class="button cancel">Back</a>
+    </footer>
+  </section>
+{% endblock %}
+
+{% block js %}
+  <script>
+    const printButton = document.querySelector('.button.print');
+    printButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.print();
+    });
+  </script>
+{% endblock %}

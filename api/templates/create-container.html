@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+  {{ form.media }}
+{% endblock %}
+
+{% block content %}
+  <section class="main create-container">
+    <form id="create-container" method="post" class="container">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <a id="submit" href="" class="button primary icon">Save
+        <img src="https://icongr.am/feather/save.svg?size=20&color=FFFFFF" alt="icon">
+      </a>
+      <a href="{% url 'manage' %}" class="button">Cancel</a>
+    </form>
+  </section>
+{% endblock %}
+
+
+{% block js %}
+  <script>
+    const editContainerForm = document.getElementById('create-container');
+    const submitButton = document.getElementById('submit');
+
+    submitButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      editContainerForm.submit();
+    });
+  </script>
+{% endblock %}

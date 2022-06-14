@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+  {{ form.media }}
+{% endblock %}
+
+{% block content %}
+  <section class="main manage-edit">
+    <form id="edit-container" method="post" class="container">
+      <div class="title">
+        <h3>{{object.name}}</h3>
+        <a href="" class="button error icon delete">Delete
+          <img src="https://icongr.am/fontawesome/trash-o.svg?size=20&color=FFFFFF" alt="icon">
+        </a>
+      </div>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <a id="submit" href="" class="button primary icon">Save
+        <img src="https://icongr.am/feather/save.svg?size=20&color=FFFFFF" alt="icon">
+      </a>
+      <a href="{% url 'manage' %}" class="button">Cancel</a>
+  </form>
+  <div class="overlay">
+    <div class="card">
+      <div class="close">
+        <span class="close-button">x</span>
+      </div>
+      <p>Are you sure you want to delete this container?</p>
+      <footer class="is-right">
+        <form id="delete-form" method="POST" action="{% url 'container-delete' object.pk %}">
+          {% csrf_token %}
+          <a href="" class="button error yes">Yes</a>
+          <a href="" class="button cancel">Cancel</a>
+        </form>
+      </footer>
+    </div>
+  </div>
+  </section>
+{% endblock %}
+
+{% block js %}
+  <script>
+    const editContainerForm = document.getElementById('edit-container');
+    const submitButton = document.getElementById('submit');
+
+    submitButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      editContainerForm.submit();
+    });
+
+    const deleteButton = document.querySelector('#edit-container .button.delete');
+    const overlay = document.querySelector('.overlay');
+    const cancelButton = document.querySelector('.card .button.cancel');
+    const closeButton = document.querySelector('.card .close-button');
+    const yesButton = document.querySelector('.card .button.yes');
+    const deleteForm = document.querySelector('#delete-form');
+    const body = document.querySelector('body');
+
+    deleteButton.addEventListener('click', (el) => {
+      el.preventDefault();
+      overlay.style.display = 'flex';
+      body.classList.add('disable-scroll');
+    });
+
+    cancelButton.addEventListener('click', (el) => {
+      el.preventDefault();
+      overlay.style.display = 'none';
+      body.classList.remove('disable-scroll');
+    });
+
+    closeButton.addEventListener('click', (el) => {
+      el.preventDefault();
+      overlay.style.display = 'none';
+      body.classList.remove('disable-scroll');
+    });
+
+    yesButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      deleteForm.submit();
+    });
+  </script>
+{% endblock %}

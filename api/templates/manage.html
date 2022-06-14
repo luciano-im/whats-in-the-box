@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <section class="main manage">
+    <div class="controls">
+      <input type="text" id="search-input" name="search-input" placeholder="Search" autofocus>
+      <a href="{% url 'container-create' %}" class="button icon create">Create
+        <img src="https://icongr.am/feather/plus.svg?size=20&color=333333" alt="icon">
+      </a>
+    </div>
+    {% for obj in object_list %}
+      <article id="container-{{obj.id}}" class="container">
+        <div class="content">
+          <h2 class="title"><img src="https://icongr.am/feather/box.svg?size=25&color=377D7F" alt="icon">{{obj.name}}</h2>
+          <div class="text">
+            {{obj.content|safe}}
+          </div>
+        </div>
+        <div class="actions">
+          <a href="{% url 'container-edit' obj.id %}" class="button primary icon">Edit
+            <img src="https://icongr.am/feather/edit.svg?size=20&color=FFFFFF" alt="icon">
+          </a>
+          <a href="{% url 'print-qr' obj.id %}" class="button secondary icon">Print QR
+            <img src="https://icongr.am/fontawesome/qrcode.svg?size=20&color=377D7F" alt="icon">
+          </a>
+          <img src="/media/qr/qr-{{obj.id}}.png" alt="">
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+{% endblock %}
+
+{% block js %}
+  <script>
+    const searchInput = document.querySelector('#search-input');
+    const containers = document.querySelectorAll("article.container");
+
+    searchInput.addEventListener('keyup', (e) => {
+      const filter = e.target.value.toUpperCase();
+
+      for (var i = 0; i < containers.length; i++) {
+        const title = containers[i].querySelector(".title").innerText.toUpperCase();
+        const content = containers[i].querySelector(".text").innerText.toUpperCase();
+        if (title.indexOf(filter) == -1 && content.indexOf(filter) == -1) {
+          containers[i].style.display = "none";
+        } else {
+          containers[i].style.display = "flex";
+        }
+      }
+    });
+  </script>
+{% endblock %}
