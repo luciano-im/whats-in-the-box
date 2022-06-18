@@ -1,8 +1,8 @@
 "use strict";
 
 const video = document.getElementById("video");
-// const canvas = document.getElementById("canvas");
-// var context = canvas.getContext("2d");
+let videoDimensions = null;
+let intrinsecDimensions = null;
 const labels = document.getElementById("labels");
 let activeLabels = [];
 // Expiry = 2 hours
@@ -20,7 +20,7 @@ const barcodeDetector = new BarcodeDetector({
 const CONSTRAINTS = {
   video: {
     width: {
-      ideal: 640,
+      min: 320,
     },
     height: {
       ideal: 480,
@@ -33,8 +33,15 @@ const getVideo = async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia(CONSTRAINTS);
     video.srcObject = stream;
-    // Run detect code function every 100 milliseconds
-    setInterval(detectCode, 100);
+    video.addEventListener("loadedmetadata", () => {
+      videoDimensions = getVideoDimensions(video);
+      intrinsecDimensions = {
+        width: video.videoWidth,
+        height: video.videoHeight,
+      };
+      // Run detect code function every 100 milliseconds
+      setInterval(detectCode, 100);
+    });
   } catch (err) {
     console.error(err);
   }
@@ -53,10 +60,17 @@ const detectCode = () => {
       }
 
       for (const barcode of codes) {
+        // boundingBox data is related to intrinsec video dimensions
         const { x, y, width, height } = barcode.boundingBox;
+        const realX = (videoDimensions.width * x) / intrinsecDimensions.width;
+        const realY = (videoDimensions.height * y) / intrinsecDimensions.height;
+        const qrWidth =
+          (videoDimensions.width * width) / intrinsecDimensions.width;
+        const qrHeight =
+          (videoDimensions.height * height) / intrinsecDimensions.height;
         const centerPoint = {
-          x: x + width / 2,
-          y: y + height / 2,
+          x: realX + qrWidth / 2,
+          y: realY + qrHeight / 2,
         };
         const rawValue = barcode.rawValue;
 
@@ -149,15 +163,24 @@ window.addEventListener("load", () => {
   getVideo();
 });
 
-// 1. Read QR Code (OK)
-// 2. Get raw value (OK)
-// 3. AJAX Fetch to the backend (OK)
-// 4. Create label (OK)
-// 5. Show label (OK)
-// 6. Hide label when QR hides (OK)
-// 7. Implement localStorage (OK)
-// 8. Set expiry to localStorage data (OK)
-// 9. Styles and layout
-// 10. Generate QR code
-// 11. Test expiry date
-// 12. Implement socket.io
+// Finding the true dimensions of an HTML5 video’s active area
+// https://nathanielpaulus.wordpress.com/2016/09/04/finding-the-true-dimensions-of-an-html5-videos-active-area/
+// helper function
+const getVideoDimensions = (video) => {
+  // Ratio of the video's intrisic dimensions
+  var videoRatio = video.videoWidth / video.videoHeight;
+  // The width and height of the video element
+  var width = video.offsetWidth,
+    height = video.offsetHeight;
+  // The ratio of the element's width to its height
+  var elementRatio = width / height;
+  // If the video element is short and wide
+  if (elementRatio > videoRatio) width = height * videoRatio;
+  // It must be tall and thin, or exactly equal to the original ratio
+  else height = width / videoRatio;
+
+  return {
+    width: width,
+    height: height,
+  };
+};

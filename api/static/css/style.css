@@ -262,9 +262,6 @@ nav .button {
   border-image-repeat: round;
   padding: 1rem;
   position: relative;
-  max-width: 670px;
-  width: 100%;
-  height: 510px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -311,7 +308,11 @@ nav .button {
   border-radius: 0 0 6px 0;
 }
 
-.scanner video, 
+.scanner video {
+  max-width: 640px;
+  width: 100%;
+}
+
 .scanner #labels {
   border-radius: 5px;
   left: 50%;
@@ -322,10 +323,14 @@ nav .button {
   height: calc(100% - 2rem);
 }
 
+.scanner video,
+.scanner #labels {
+  max-width: 640px;
+}
+
 .scanner video {
   z-index: 1;
-  max-width: 640px;
-  max-height: 480px;
+  height: auto;
 }
 
 .scanner #labels {
@@ -335,36 +340,37 @@ nav .button {
 .scanner #labels span {
   position: absolute;
   display: inline-block;
-}
-
-.scanner #labels span ul {
   border: 3px solid var(--color-accent);
   border-radius: 5px;
-  display: inline-block;
-  position: relative;
   background-color: white;
   padding: .5rem .7rem;
   margin: 0;
   box-shadow: 2px 2px 2px rgba(0,0,0,.5);
-}
-
-.scanner #labels span ul li {
   font-family: 'Roboto', sans-serif;
   font-weight: 500;
-  list-style: none;
-  font-size: .9rem;
+  font-size: 1.3rem;
   text-transform: uppercase;
+  max-width: 200px;
 }
 
-.scanner #labels span ul li:not(:last-child) {
-  margin-bottom: .3rem;
-}
-
-.scanner #labels span ul::before {
+.scanner #labels span::before {
   content:"\A";
   border-style: solid;
   border-width: 10px 15px 10px 0;
   border-color: transparent var(--color-accent) transparent transparent;
   position: absolute;
   left: -15px;
+}
+
+.scanner #labels span ul {
+  margin: 0;
+  padding: 0;
+}
+
+.scanner #labels span ul li {
+  list-style: none;
+}
+
+.scanner #labels span ul li:not(:last-child) {
+  margin-bottom: .3rem;
 }
