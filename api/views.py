@@ -42,23 +42,11 @@ class PrintQRView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        id = context['pk']
-        qrfile = os.path.join(settings.MEDIA_ROOT, 'QR', f'qr-{id}.png')
         
-        if not os.path.exists(qrfile):
-            qr = qrcode.QRCode(
-                version=2,
-                error_correction=qrcode.constants.ERROR_CORRECT_H,
-                box_size=10,
-                border=4,
-            )
-            qr.add_data(id)
-            img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
-            img.save(os.path.join(settings.MEDIA_ROOT, 'QR', f'qr-{id}.png'))
-
-        context['qr_filename'] = f'{settings.MEDIA_URL}/QR/qr-{id}.png'
-        context['container'] = Container.objects.get(id=id)
+        id = context['pk']
+        obj = Container.objects.get(id=id)
+        context['container'] = obj
+        context['qr_filename'] = obj.get_qr_url()
 
         return context
 
