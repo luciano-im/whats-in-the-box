@@ -12,6 +12,8 @@ const labels = document.getElementById("labels");
 let activeLabels = [];
 // Expiry = 2 hours
 const EXPIRY = 7200000000;
+// Backend URL
+let backendURL = null;
 
 if (!("BarcodeDetector" in window)) {
   console.log("Barcode Detector is not supported by this browser.");
@@ -151,7 +153,7 @@ const updateLabel = async (centerPoint, id) => {
 
 // Fetch container data to the backend
 const fetchAPI = async (id) => {
-  const url = `http://127.0.0.1:8000/api/container/${id}`;
+  const url = `${backendURL}/api/container/${id}`;
   try {
     const response = await fetch(url, {
       method: "GET",
@@ -208,5 +210,6 @@ const getVideoDimensions = (video) => {
 
 // Initialize the script
 window.addEventListener("load", () => {
+  backendURL = document.location.origin;
   getVideo();
 });
