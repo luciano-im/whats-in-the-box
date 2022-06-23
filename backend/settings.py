@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,8 +28,7 @@ SECRET_KEY = 'django-insecure-dux%m&861ue3acvyoep6iy$hhm#b!j1xiy+(77+flnd$qfnmbr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS=['127.0.0.1', 'http://127.0.0.1:8000', 'http://localhost:8000', 'http://127.0.0.1:5000','http://localhost:5000']
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', str(os.getenv('BACKEND_URL'))]
 
 
 # Application definition
@@ -131,5 +133,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_WHITELIST = (
-    'http://127.0.0.1:5500',
+    'http://127.0.0.1',
+    str(os.getenv('BACKEND_URL'))
 )
